@@ -1,0 +1,15 @@
+{
+    "name": "Couchbase Node.js Workspace",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "couchbase.vscode-couchbase"
+            ]
+        }
+    },
+    "postCreateCommand": "npm install",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {}
+    }
+}
