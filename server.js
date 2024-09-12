@@ -13,6 +13,9 @@ app.use(cors());
 // Initialize OpenAI client
 const openaiclient = new openai.OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Import the helper functions
+const { generateQueryEmbedding, storeEmbedding } = require('./helpers');
+
 let cluster;
 
 // Initialize Couchbase connection
@@ -25,20 +28,6 @@ async function init() {
     });
   }
   return cluster;
-}
-
-/**
- * Generates an embedding for the given query using the OpenAI client.
- * 
- * @param {string} query - The query for which the embedding needs to be generated.
- * @returns {Array} The embedding generated for the query.
- */
-async function generateQueryEmbedding(query) {
-  const response = await openaiclient.embeddings.create({
-    model: 'text-embedding-ada-002',
-    input: query,
-  });
-  return response.data[0].embedding;
 }
 
 /**
@@ -114,24 +103,6 @@ app.post('/search', async (req, res) => {
   }
 });
 
-/**
- * Embeds content and stores it in Couchbase.
- * 
- * @param {string} content - Content to embed.
- * @returns {Object} Document with embedded content stored in Couchbase.
- */
-async function storeEmbedding(content, id) {
-  const embedding = await generateQueryEmbedding(content);
-  const cluster = await init();
-  const bucket = cluster.bucket(process.env.COUCHBASE_BUCKET);
-  const collection = bucket.defaultCollection();
-
-  const docId = `embedding::${id}`;
-  await collection.upsert(docId, { content, embedding });
-
-  return { docId, embedding };
-}
-
 // Route to embed and store markdown files
 app.post('/embed', async (req, res) => {
   const filePaths = req.body.files || [];
@@ -161,6 +132,8 @@ app.post('/embed', async (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = { app, server };
