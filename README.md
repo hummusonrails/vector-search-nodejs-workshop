@@ -73,3 +73,7 @@ curl -X POST http://localhost:3000/transform -H "Content-Type: application/json"
 
 The data has now been converted into vector embeddings and stored in the Couchbase bucket that you created earlier.
 
+## Index Data
+
+Once the vector embeddings have been stored in the Couchbase bucket, we can create a vector search index to enable similarity search. 
+
