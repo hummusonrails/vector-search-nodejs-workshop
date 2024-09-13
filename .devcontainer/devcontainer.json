@@ -1,8 +1,8 @@
 {
-    "name": "Couchbase Node.js Workspace",
+    "name": "Vector Search Node.js Workshop",
     "build": {
-        "dockerfile": "Dockerfile",
-        "context": "."
+      "dockerfile": "Dockerfile",
+      "context": "."
     },
     "customizations": {
         "vscode": {
@@ -11,11 +11,9 @@
             ]
         }
     },
-    "postCreateCommand": [
-        ". \"$HOME/.cargo/env\"",
-        "npm install"
-    ],
+    "postCreateCommand": "npm install",
     "features": {
         "ghcr.io/devcontainers/features/node:1": {}
     }
-}
+  }
+  
