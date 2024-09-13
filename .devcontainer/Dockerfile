@@ -1,8 +1,6 @@
 # Use the base image
 FROM mcr.microsoft.com/devcontainers/javascript-node:0-20
 
-WORKDIR /home/
-
 COPY . .
 
 RUN bash ./setup.sh
