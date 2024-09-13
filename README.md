@@ -65,7 +65,7 @@ The Codespace environment already has all the dependencies installed. You can st
 node server.js
 ```
 
-The repository also has a sample set of data in the `./data` directory. You can transform this data by making a POST request to the `/transform` endpoint providing the paths to the data files as an array in the request body.
+The repository also has a sample set of data in the `./data` directory. You can transform this data by making a POST request to the `/embed` endpoint providing the paths to the data files as an array in the request body.
 
 ```bash
 curl -X POST http://localhost:3000/embed -H "Content-Type: application/json" -d '["./data/data1.json", "./data/data2.json"]'
