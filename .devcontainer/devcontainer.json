@@ -1,6 +1,9 @@
 {
     "name": "Couchbase Node.js Workspace",
-    "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
     "customizations": {
         "vscode": {
             "extensions": [
