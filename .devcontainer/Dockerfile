@@ -23,7 +23,9 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
     && /root/.cargo/bin/rustup component add rustfmt \
     && /root/.cargo/bin/rustup component add rustfmt --toolchain nightly \
     && /root/.cargo/bin/rustup component add clippy \
-    && /root/.cargo/bin/rustup component add clippy --toolchain nightly
+    && /root/.cargo/bin/rustup component add clippy --toolchain nightly \
+    && /root/.cargo/bin/rustup update stable \
+    && /root/.cargo/bin/rustup default stable
 
 # Add Cargo's bin directory to PATH
 ENV PATH="/root/.cargo/bin:${PATH}"
