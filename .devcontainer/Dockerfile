@@ -5,7 +5,7 @@ COPY . .
 
 RUN bash ./setup.sh
 
-ENV PATH="/root/.cargo/bin:$PATH"
+ENV PATH="$HOME/.cargo/bin:$PATH"
 
 # Clone and install couchbase-shell
 RUN git clone https://github.com/couchbaselabs/couchbase-shell.git \
