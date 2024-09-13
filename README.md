@@ -57,7 +57,7 @@ After creating a cluster, you can create a new bucket by following the steps bel
 
 Before we can index and search data, we need to transform it into a format that can be used by the vector search engine. We will be using [Couchbase Vector Search](https://docs.couchbase.com/server/current/fts/fts-vector-search.html) for this workshop.
 
-Provided in this repository is an Express.js application that will expose a `/transform` endpoint to transform the data.
+Provided in this repository is an Express.js application that will expose a `/embed` endpoint to transform the data.
 
 The Codespace environment already has all the dependencies installed. You can start the Express.js application by running the following command:
 
@@ -68,7 +68,7 @@ node server.js
 The repository also has a sample set of data in the `./data` directory. You can transform this data by making a POST request to the `/transform` endpoint providing the paths to the data files as an array in the request body.
 
 ```bash
-curl -X POST http://localhost:3000/transform -H "Content-Type: application/json" -d '["./data/data1.json", "./data/data2.json"]'
+curl -X POST http://localhost:3000/embed -H "Content-Type: application/json" -d '["./data/data1.json", "./data/data2.json"]'
 ```
 
 The data has now been converted into vector embeddings and stored in the Couchbase bucket that you created earlier.
