@@ -1,9 +1,6 @@
 {
     "name": "Vector Search Node.js Workshop",
-    "build": {
-      "dockerfile": "Dockerfile",
-      "context": "."
-    },
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -11,7 +8,7 @@
             ]
         }
     },
-    "postCreateCommand": "npm install",
+    "postCreateCommand": "npm install && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && PATH=\"$HOME/.cargo/bin:$PATH\" && git clone https://github.com/couchbaselabs/couchbase-shell.git && cargo install --path ./couchbase-shell",
     "features": {
         "ghcr.io/devcontainers/features/node:1": {}
     }
