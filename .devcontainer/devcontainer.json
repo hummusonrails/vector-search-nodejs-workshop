@@ -11,7 +11,10 @@
             ]
         }
     },
-    "postCreateCommand": "npm install",
+    "postCreateCommand": [
+        ". \"$HOME/.cargo/env\"",
+        "npm install"
+    ],
     "features": {
         "ghcr.io/devcontainers/features/node:1": {}
     }
