@@ -34,68 +34,107 @@ async function init() {
  * Retrieves stored embeddings from the specified bucket in Couchbase.
  * 
  * @param {Array} queryEmbedding - The embedding for the search query.
- * @returns {Array} An array of objects containing the id and embeddings of stored data.
+ * @returns {Array} An array of objects containing the id and score of stored data.
  */
 async function getStoredEmbeddings(queryEmbedding) {
   const cluster = await init();
   const scope = cluster.bucket(process.env.COUCHBASE_BUCKET).scope('_default');
-  const search_index = process.env.COUCHBASE_VECTOR_SEARCH_INDEX;
+  const searchIndex = 'vector-search-index';
 
-  const search_req = couchbase.SearchRequest.create(
+  let request = couchbase.SearchRequest.create(
     couchbase.VectorSearch.fromVectorQuery(
-      couchbase.VectorQuery.create(
-         `${process.env.COUCHBASE_BUCKET}.embeddings`,
-        queryEmbedding
-      ).numCandidates(5)
+      couchbase.VectorQuery.create('_default.embedding', queryEmbedding).numCandidates(5)
     )
   );
-
-  const result = await scope.search(
-    search_index,
-    search_req
-  );
+  
+  const result = await scope.search(searchIndex, request);
 
   return result.rows.map(row => {
     return {
       id: row.id,
-      embeddings: row.content[process.env.COUCHBASE_BUCKET].embeddings
+      score: row.score
     };
   });
 }
 
 /**
- * Search blog posts using the query embedding.
+ * Fetches full document from Couchbase by ID
  * 
- * @param {string} query - The search term.
- * @returns {Array} Search results.
+ * @param {Array} storedEmbeddings - The search result containing document IDs and scores.
+ * @returns {Array} An array of documents with their content and relevance score.
  */
-async function searchBlogPosts(query) {
-  const queryEmbedding = await generateQueryEmbedding(query);
-  const storedEmbeddings = await getStoredEmbeddings(queryEmbedding);
-
+async function fetchDocumentsByIds(storedEmbeddings) {
   const cluster = await init();
   const bucket = cluster.bucket(process.env.COUCHBASE_BUCKET);
   const collection = bucket.defaultCollection();
+
   const results = await Promise.all(
-    storedEmbeddings.map(async ({ id }) => {
-      const docId = id.replace('embedding::', '');
-      const result = await collection.get(docId);
-      return result.content;
+    storedEmbeddings.map(async ({ id, score }) => {
+      try {
+        const result = await collection.get(id);
+        const content = result.content;
+        
+        // Remove embedding from content
+        if (content && content._default && content._default.embedding) {
+          delete content._default.embedding;
+        }
+
+        return {
+          content: content,
+          score: score 
+        };
+      } catch (err) {
+        console.error(`Error fetching document with ID ${id}:`, err);
+        return null;
+      }
     })
   );
 
-  return results;
+  return results.filter(doc => doc !== null); 
+}
+
+/**
+ * Search blog posts using the query embedding or from local file.
+ * 
+ * @param {string} query - The search term.
+ * @param {boolean} useLocalEmbedding - Whether to use a local embedding from file.
+ * @returns {Array} Search results.
+ */
+async function searchBlogPosts(query, useLocalEmbedding = false) {
+  let queryEmbedding;
+
+  if (useLocalEmbedding) {
+    const filePath = path.resolve('./data/query_with_embedding/query_with_embedding.json');
+    if (!fs.existsSync(filePath)) {
+      throw new Error('Local embedding file not found');
+    }
+    
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const fileData = JSON.parse(fileContent);
+
+    queryEmbedding = fileData.data[0].embedding;
+  } else {
+    queryEmbedding = await generateQueryEmbedding(query);
+  }
+
+  const storedEmbeddings = await getStoredEmbeddings(queryEmbedding);
+
+  const documents = await fetchDocumentsByIds(storedEmbeddings);
+
+  return documents;
 }
 
 // Route to handle search requests
 app.post('/search', async (req, res) => {
   const searchTerm = req.body.q || '';
-  if (!searchTerm) {
-    return res.status(400).json({ error: 'No search term provided' });
+  const useLocalEmbedding = req.body.useLocalEmbedding || false;
+
+  if (!searchTerm && !useLocalEmbedding) {
+    return res.status(400).json({ error: 'No search term or embedding provided' });
   }
 
   try {
-    const searchResults = await searchBlogPosts(searchTerm);
+    const searchResults = await searchBlogPosts(searchTerm, useLocalEmbedding);
     res.json(searchResults);
   } catch (err) {
     console.error('Error searching blog posts:', err);
