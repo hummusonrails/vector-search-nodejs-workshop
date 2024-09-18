@@ -180,3 +180,45 @@ You can perform a santity check to ensure the index was created by querying for 
 ```bash
 > query indexes
 ```
+
+## Search Data
+
+Now that the data has been indexed, you can perform similarity searches using the vector search index.
+
+You can use the `/search` endpoint provided in this repository to search for similar items based on a query item. The endpoint will return the top 5 most similar items.
+
+The Codespace environment already has all the dependencies installed. You can start the Express.js application by running the following command:
+
+```bash
+node server.js
+```
+
+Once the server is running, you can either search using the provided query with the embedding already generated or you can provide your own query item.
+
+### Search with the provided query
+
+You can search for similar items based on the provided query item by making a POST request to the `/search` endpoint.
+
+Here is an example cURL command to search for similar items based on the provided query item:
+
+```bash
+curl -X POST http://localhost:3000/search \
+  -H "Content-Type: application/json" \
+  -d '{"q": "", "useLocalEmbedding": true}'
+```
+
+As you can see, we use the `useLocalEmbedding` flag to indicate that we want to use the provided query item and we keep the `q` field empty.
+
+### Search with your own query
+
+If you want to search for similar items based on your own query item, you can provide the query item in the request body.
+
+The query will be automatically converted into a vector embedding using the OpenAI API. You need to provide your OpenAI API key in the `.env` file before starting the Express.js application.
+
+Here is an example cURL command to search for similar items based on your own query item:
+
+```bash
+curl -X POST http://localhost:3000/search \
+  -H "Content-Type: application/json" \
+  -d '{"q": "your_query_item"}'
+```
