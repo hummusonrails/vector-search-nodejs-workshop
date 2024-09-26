@@ -10,8 +10,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Initialize OpenAI client
-const openaiclient = new openai.OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const useLocalEmbedding = process.env.USE_LOCAL_EMBEDDING === 'true';
+
+let openaiclient = null;
+if (!useLocalEmbedding) {
+  // Initialize OpenAI client only if local embedding is not being used
+  openaiclient = new openai.OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 // Import the helper functions
 const { generateQueryEmbedding, storeEmbedding } = require('./helpers');
