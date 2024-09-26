@@ -62,6 +62,30 @@ There are two options in this workshop to generate vector embeddings from data:
 1. Use the `/embed` endpoint provided in this repository to transform the data. *You need an OpenAI API key to use this option.*
 2. Import directly the data with *already generated embeddings* into the Couchbase bucket. You can use the data provided in the `./data/individual_items_with_embedding` directory.
 
+### Using Local Embeddings vs OpenAI API
+
+This workshop gives you the flexibility to choose between generating embeddings locally or using the OpenAI API.
+
+- If you have pre-generated embeddings (provided in the repository), you can use the `useLocalEmbedding` flag to avoid using the OpenAI API.
+- If you want to generate embeddings dynamically from the text, you need to provide your OpenAI API key and set the `useLocalEmbedding` flag to `false`.
+
+#### Setting the `USE_LOCAL_EMBEDDING` Flag
+
+In the `.env` file, set the `USE_LOCAL_EMBEDDING` flag to control the mode:
+
+```bash
+USE_LOCAL_EMBEDDING=true
+```
+
+* `true`: Use pre-generated embeddings (no OpenAI API key required).
+* `false`: Use OpenAI API to generate embeddings (OpenAI API key required).
+
+Make sure to set the `OPENAI_API_KEY` in the `.env` file if you set `USE_LOCAL_EMBEDDING` to `false`.
+
+```bash
+OPENAI_API_KEY=your_openai_api_key
+```
+
 Follow the instructions below for the option you choose.
 
 ### Option 1: Use the `/embed` Endpoint
@@ -74,7 +98,7 @@ The Codespace environment already has all the dependencies installed. You can st
 node server.js
 ```
 
-The repository also has a sample set of data in the `./data/individual_items` directory. You can transform this data by making a POST request to the `/embed` endpoint providing the paths to the data files as an array in the request body.
+The repository also has a sample set of data in the `./data/individual_items` directory. You can transform this data by making a `POST` request to the `/embed` endpoint providing the paths to the data files as an array in the request body.
 
 ```bash
 curl -X POST http://localhost:3000/embed -H "Content-Type: application/json" -d '["./data/data1.json", "./data/data2.json"]'
@@ -82,11 +106,11 @@ curl -X POST http://localhost:3000/embed -H "Content-Type: application/json" -d 
 
 The data has now been converted into vector embeddings and stored in the Couchbase bucket that you created earlier.
 
-### Option 2: Import Data with Embeddings
+### Option 2: Import Data with Pre-Generated Embeddings
 
 If you choose to import the data directly, you can use the data provided in the `./data/individual_items_with_embedding` directory. The data is already in the format required to enable vector search on it.
 
-Once you have opened this repositority in a [GitHub Codespace](https://codespaces.new/hummusonrails/vector-search-nodejs-workshop), you can import the data with the generated embeddings using the [Couchbase shell](https://couchbase.sh/docs/#_importing_data) from the command line.
+Once you have opened this repository in a [GitHub Codespace](https://codespaces.new/hummusonrails/vector-search-nodejs-workshop), you can import the data with the generated embeddings using the [Couchbase shell](https://couchbase.sh/docs/#_importing_data) from the command line.
 
 #### Edit the Config File
 
@@ -94,7 +118,7 @@ First, edit the `./config_file/config` file with your Couchbase Capella informat
 
 You can find a pre-filled config file in the Couchbase Capella dashboard under the "Connect" tab.
 
-Once you click on the "Connect" tab, you will see a section called "Couchbase Shell" among the options on the left-hand menu. You can choose the access credentials for the shell and copy the config file contet provided and paste it in the `./config_file/config` file.
+Once you click on the "Connect" tab, you will see a section called "Couchbase Shell" among the options on the left-hand menu. You can choose the access credentials for the shell and copy the config file content provided and paste it in the ./config_file/config file.
 
 <img src="workshop_images/get_cbshell_config.png" alt="Get Couchbase Shell config file data" width="50%">
 
@@ -109,7 +133,7 @@ cd data/individual_items_with_embedding
 Open up Couchbase shell passing in an argument with the location of the config file defining your Couchbase information:
 
 ```bash
-cbsh --config-dir ../config_file
+cbsh --config-dir ../config-file
 ```
 
 Once in the shell, run the `nodes` command to just perform a sanity check that you are connected to the correct cluster.
@@ -131,13 +155,13 @@ This should output something similar to the following:
 Now, import the data into the bucket you created earlier:
 
 ```bash
-> ls *_with_embedding.json | each { |it| open $it.name | wrap content | insert id $in.content._default.name } | doc upsert
+ls *_with_embedding.json | each { |it| open $it.name | wrap content | insert id $in.content._default.name } | doc upsert
 ```
 
 Once this is done, you can perform a sanity check to ensure the documents were inserted by running a query to select just one:
 
 ```bash
-> query "select * from name_of_your_bucket._default._default limit 1"
+query "select * from name_of_your_bucket._default._default limit 1"
 ```
 
 Replace the `name_of_your_bucket` with the name of your bucket you created.
@@ -151,7 +175,7 @@ You will use Couchbase Shell to perform this action as well.
 Run the following command from inside the shell:
 
 ```bash
-> vector create-index --bucket name_of_your_bucket --similarity-metric dot_product vector-search-index embedding 1536
+vector create-index --bucket name_of_your_bucket --similarity-metric dot_product vector-search-index embedding 1536
 ```
 
 Replace the `name_of_your_bucket` with the name of your bucket you created.
@@ -159,7 +183,7 @@ Replace the `name_of_your_bucket` with the name of your bucket you created.
 You can perform a santity check to ensure the index was created by querying for all the indexes and you should see the `vector_search_index` in the list:
 
 ```bash
-> query indexes
+query indexes
 ```
 
 ## Search Data
@@ -178,9 +202,9 @@ Once the server is running, you can either search using the provided query with 
 
 ### Search with the provided query
 
-You can search for similar items based on the provided query item by making a POST request to the `/search` endpoint.
+You can search for similar items based on the provided query item by making a `POST` request to the `/search` endpoint.
 
-Here is an example cURL command to search for similar items based on the provided query item:
+Here is an example `cURL` command to search for similar items based on the provided query item:
 
 ```bash
 curl -X POST http://localhost:3000/search \
@@ -194,7 +218,7 @@ As you can see, we use the `useLocalEmbedding` flag to indicate that we want to 
 
 If you want to search for similar items based on your own query item, you can provide the query item in the request body.
 
-The query will be automatically converted into a vector embedding using the OpenAI API. You need to provide your OpenAI API key in the `.env` file before starting the Express.js application.
+The query will be automatically converted into a vector embedding using the OpenAI API. You need to provide your OpenAI API key in the `.env file` before starting the Express.js application.
 
 Here is an example cURL command to search for similar items based on your own query item:
 
@@ -203,3 +227,4 @@ curl -X POST http://localhost:3000/search \
   -H "Content-Type: application/json" \
   -d '{"q": "your_query_item"}'
 ```
+

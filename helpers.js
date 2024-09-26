@@ -1,9 +1,24 @@
 const openai = require('openai');
 const couchbase = require('couchbase');
+require('dotenv').config();
 
-const openaiclient = new openai.OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const useLocalEmbedding = process.env.USE_LOCAL_EMBEDDING === 'true';
+
+let openaiclient = null;
+if (!useLocalEmbedding) {
+  // Initialize OpenAI client only if local embedding is not being used
+  openaiclient = new openai.OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 async function generateQueryEmbedding(query) {
+  if (useLocalEmbedding) {
+    throw new Error('Local embedding mode is enabled, but no local embedding function is provided here.');
+  }
+
+  if (!openaiclient) {
+    throw new Error('OpenAI client is not initialized.');
+  }
+
   const response = await openaiclient.embeddings.create({
     model: 'text-embedding-ada-002',
     input: query,
@@ -26,7 +41,14 @@ async function init() {
 async function storeEmbedding(content, id) {
   try {
     console.log(`Generating embedding for ${id}...`);
-    const embedding = await generateQueryEmbedding(content);
+
+    let embedding;
+    if (useLocalEmbedding) {
+      throw new Error('Local embedding mode is enabled, but storeEmbedding function is not set up for local embedding.');
+    } else {
+      embedding = await generateQueryEmbedding(content);
+    }
+
     console.log(`Embedding generated for ${id}.`);
 
     console.log(`Initializing Couchbase connection for ${id}...`);
