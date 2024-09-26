@@ -1,26 +1,8 @@
+# cbsh config file
 version = 1
-llms = []
-
 [[cluster]]
-identifier = "" # This is the name of the cluster you created
-connstr = "" # This is the connection string for the cluster and can be found in the Capella UI
-default-bucket = "" # This is the name of the bucket you created
-username = "" # This is the username you created in the connect settings in the Capella UI
-password = "" # This is the password you created in the connect settings in the Capella UI
-default-collection = "_default" # Keep these as is unless you changed the defaults in the Capella UI
-default-scope = "_default" # Keep these as is unless you changed the defaults in the Capella UI
-data-timeout = "10s" # Keep as is
-connect-timeout = "1m 15s" # Keep as is
-search-timeout = "1m 15s" # Keep as is
-analytics-timeout = "1m 15s" # Keep as is
-management-timeout = "1m 15s" # Keep as is
-transaction-timeout = "1m 15s" # Keep as is
-tls-enabled = true # Keep as is
-tls-accept-all-certs = true # Keep as is
-capella-organization = "" # This is the name of the your organization, if multiple words use a hyphen and lowercase
-
-[[capella-organization]]
-identifier = "" # This is the name of the your organization, if multiple words use a hyphen and lowercase
-access-key = "" # This is the access key for your organization found in the Capella UI
-secret-key =  "" # This is the secret key for your organization found in the Capella UI
-default-project = "" # This is the name of the project you created where all your clusters are stored
+identifier = "capella"
+connstr = "" # Replace this with connection string from cluster access credentials
+user-display-name = "" # Your display name here
+username = "" # Replace this with username from cluster access credentials
+password = "<<password>>" # Replace this with password from cluster access credentials
