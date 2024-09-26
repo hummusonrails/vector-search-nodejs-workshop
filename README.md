@@ -92,30 +92,11 @@ Once you have opened this repositority in a [GitHub Codespace](https://codespace
 
 First, edit the `./config_file/config` file with your Couchbase Capella information.
 
-Under the `[[cluster]]` section:
+You can find a pre-filled config file in the Couchbase Capella dashboard under the "Connect" tab.
 
-- Replace the empty string value for `identifier` with the name of the cluster you created earlier.
-- Replace the empty string value for `connstr` with the connection string to your cluster.
-  - Found in `Menu > Connect`
-![](workshop_images/menu_with_connect_highlighted.png)
-- Replace the empty string for `default_bucket` with the name of the bucket you created earlier.
-- Replace the empty strings for `username` and password with the username and password of your Couchbase Capella account.
-  - Found in `Menu > Settings > Cluster Access`
-  ![](workshop_images/menu_with_settings_highlighted.png)
-- Replace the empty string for `capella_organization` with the name of your organization.
-  - Found by clicking on your avatar icon (usually your initials) then `Organizations`
-  - Change the name of your organization if multiple words to use dashes instead of spaces, i.e. "My Organization" becomes "my-organization".
-  ![](workshop_images/menu_with_organizations_highlighted.png)
+Once you click on the "Connect" tab, you will see a section called "Couchbase Shell" among the options on the left-hand menu. You can choose the access credentials for the shell and copy the config file contet provided and paste it in the `./config_file/config` file.
 
-Under the `[[capella-organization]] section:
-
-- Replace the `identifier` empty string value with the name of your organization like the last step above.
-- Replace the `access-key` and `secret_key` empty strings values with the access key for your organization.
-  - Found in `Menu > Settings > API Keys`
-  ![](workshop_images/menu_with_api_keys_highlighted.png)
-- Replace the `default-project` empty string value with the name of the project you created earlier.
-  - Found in the top-level view of all your clusters.
-  ![](workshop_images/cluster_list_with_project_name.png)
+<img src="workshop_images/get_cbshell_config.png" alt="Get Couchbase Shell config file data" width="50%">
 
 #### Import Data with Couchbase Shell
 
