@@ -8,8 +8,9 @@
             ]
         }
     },
-    "postCreateCommand": "npm install && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && PATH=\"$HOME/.cargo/bin:$PATH\" && git clone https://github.com/couchbaselabs/couchbase-shell.git && cargo build --path ./couchbase-shell && echo 'export PATH=$(pwd)/couchbase-shell/target/debug:$PATH' >> ~/.bashrc && source ~/.bashrc",
+    "postCreateCommand": "npm install && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && PATH=\"$HOME/.cargo/bin:$PATH\" && git clone https://github.com/couchbaselabs/couchbase-shell.git && cd couchbase-shell && cargo build && cd .. && echo 'export PATH=$(pwd)/couchbase-shell/target/debug:$PATH' >> ~/.bashrc && source ~/.bashrc",
     "features": {
         "ghcr.io/devcontainers/features/node:1": {}
     }
 }
+
