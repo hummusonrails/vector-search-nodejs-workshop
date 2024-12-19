@@ -9,6 +9,9 @@ This workshop is designed to help you get started with vector search using Couch
 
 The entire workshop will be run from inside a GitHub Codespace, which is a cloud-based development environment that is pre-configured with all the necessary tools and services. You don't need to install anything on your local machine.
 
+> [!IMPORTANT]
+> Key information needed for running this workshop in GitHub Codespaces can be found [here](#running-in-github-codespaces).
+
 ## Prerequisites
 
 - A GitHub account
@@ -22,6 +25,7 @@ The entire workshop will be run from inside a GitHub Codespace, which is a cloud
 4. [Transform Data](#transform-data)
 5. [Index Data](#index-data)
 6. [Search Data](#search-data)
+7. [Running in GitHub Codespaces](#running-in-github-codespaces)
 
 ## Video Walkthrough
 
@@ -234,3 +238,28 @@ curl -X POST http://localhost:3000/search \
   -d '{"q": "your_query_item"}'
 ```
 
+## Running in GitHub Codespaces
+
+When working in a GitHub Codespaces environment, there are some differences to be aware of, especially for the Couchbase Shell commands.
+
+* The `cbsh` binary is not available in your `PATH` by default in Codespaces. Instead, you can find it in the following directory within your workspace:
+
+```bash
+couchbase-shell/target/debug/cbsh
+```
+
+To use `cbsh` in your Codespace, provide the full path wwhen running commands. For example:
+
+```bash
+./couchbase-shell/target/debug/cbsh --config-dir /path/to/config-file
+```
+
+You can also create an alias for the `cbsh` binary to make it easier to use:
+
+```bash
+alias cbsh="./couchbase-shell/target/debug/cbsh"
+```
+
+This allows you to run `cbsh` commands without specifying the full path.
+
+Other than that, Codespaces comes pre-configured with all the dependencies necessary to run this workshop.
