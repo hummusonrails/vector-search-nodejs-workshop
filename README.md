@@ -23,6 +23,12 @@ The entire workshop will be run from inside a GitHub Codespace, which is a cloud
 5. [Index Data](#index-data)
 6. [Search Data](#search-data)
 
+## Video Walkthrough
+
+Want to give this a go but haven't had the chance to join an in-person or online Couchbase workshop yet? Follow along with this step-by-step guided video walkthrough of this workshop!
+
+https://github.com/user-attachments/assets/ef5c71e6-17c0-44f5-b6f1-ecab3dd92789
+
 ## Create a Capella Account
 
 Couchbase Capella is a fully managed database service that provides a seamless experience for developers to build modern applications. You can sign up for a free account at [https://cloud.couchbase.com/signup](https://cloud.couchbase.com/signup).
