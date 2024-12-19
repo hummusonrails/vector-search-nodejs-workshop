@@ -1,8 +1,0 @@
-# cbsh config file
-version = 1
-[[cluster]]
-identifier = "capella"
-connstr = "" # Replace this with connection string from cluster access credentials
-user-display-name = "" # Your display name here
-username = "" # Replace this with username from cluster access credentials
-password = "<<password>>" # Replace this with password from cluster access credentials

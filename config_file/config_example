@@ -1,0 +1,9 @@
+# cbsh config file
+version = 1
+[[cluster]]
+identifier = "capella"
+connstr = "" # Add your connection string here
+user-display-name = "" # Your display name here
+username = "" # Replace this with username from cluster access credentials
+password = "" # Replace this with password from cluster access credentials
+default-bucket = "" # Replace this with the name of the bucket you want to use
