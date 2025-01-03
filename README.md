@@ -132,6 +132,14 @@ Once you click on the "Connect" tab, you will see a section called "Couchbase Sh
 
 <img src="workshop_images/get_cbshell_config.png" alt="Get Couchbase Shell config file data" width="50%">
 
+Make sure to add the `default-bucket` field to the config file with the name of the bucket you created earlier.
+
+```bash
+default-bucket = "your-bucket-name" 
+```
+
+You can find an example config file in the `./config_file` directory for reference.
+
 #### Import Data with Couchbase Shell
 
 Change into the directory where the data files with embeddings are:
