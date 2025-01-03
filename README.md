@@ -176,6 +176,14 @@ Now, import the data into the bucket you created earlier:
 ls *_with_embedding.json | each { |it| open $it.name | wrap content | insert id $in.content._default.name } | doc upsert
 ```
 
+While, in this workshop we are focused on creating a *vector search index*, you can also create a primary search index to enable full-text search on the data:
+
+```bash
+query "create primary index on name_of_your_bucket._default._default"
+```
+
+Make sure to replace the `name_of_your_bucket` with the name of your bucket you created.
+
 Once this is done, you can perform a sanity check to ensure the documents were inserted by running a query to select just one:
 
 ```bash
