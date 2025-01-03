@@ -143,7 +143,7 @@ cd data/individual_items_with_embedding
 Open up Couchbase shell passing in an argument with the location of the config file defining your Couchbase information:
 
 ```bash
-cbsh --config-dir ../config-file
+cbsh --config-dir ../../config-file
 ```
 
 Once in the shell, run the `nodes` command to just perform a sanity check that you are connected to the correct cluster.
