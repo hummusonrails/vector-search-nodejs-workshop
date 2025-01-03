@@ -132,6 +132,14 @@ Once you click on the "Connect" tab, you will see a section called "Couchbase Sh
 
 <img src="workshop_images/get_cbshell_config.png" alt="Get Couchbase Shell config file data" width="50%">
 
+Make sure to add the `default-bucket` field to the config file with the name of the bucket you created earlier.
+
+```bash
+default-bucket = "your-bucket-name" 
+```
+
+You can find an example config file in the `./config_file` directory for reference.
+
 #### Import Data with Couchbase Shell
 
 Change into the directory where the data files with embeddings are:
@@ -143,7 +151,7 @@ cd data/individual_items_with_embedding
 Open up Couchbase shell passing in an argument with the location of the config file defining your Couchbase information:
 
 ```bash
-cbsh --config-dir ../config-file
+cbsh --config-dir ../../config-file
 ```
 
 Once in the shell, run the `nodes` command to just perform a sanity check that you are connected to the correct cluster.
@@ -167,6 +175,14 @@ Now, import the data into the bucket you created earlier:
 ```bash
 ls *_with_embedding.json | each { |it| open $it.name | wrap content | insert id $in.content._default.name } | doc upsert
 ```
+
+While, in this workshop we are focused on creating a *vector search index*, you can also create a primary search index to enable full-text search on the data:
+
+```bash
+query "create primary index on name_of_your_bucket._default._default"
+```
+
+Make sure to replace the `name_of_your_bucket` with the name of your bucket you created.
 
 Once this is done, you can perform a sanity check to ensure the documents were inserted by running a query to select just one:
 
